@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2E7D5B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="기출 연습">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>온실가스관리기사 실기 기출 연습</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F4; --sheet:#FFFFFF; --ink:#1B2733; --ink2:#5F6C77; --rule:#C7D0D8; --line:#E1E6EB;
+    --accent:#2E7D5B; --accent-ink:#FFFFFF; --accent-soft:#E2F1E9;
+    --bad:#B5432F; --bad-soft:#F8E6E2;
+    --badge:#56636E; --focus:#2E7D5B;
+    --sans:'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+    --serif:'Noto Serif KR', 'Apple SD Gothic Neo', 'Nanum Myeongjo', Batang, serif;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#121619; --sheet:#1A2026; --ink:#E7ECF0; --ink2:#9AA6B0; --rule:#3A4752; --line:#2A343D;
+      --accent:#5BC892; --accent-ink:#0F1A14; --accent-soft:#1E3A2C;
+      --bad:#E4826E; --bad-soft:#3B2521; --badge:#6C7A86; color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#121619; --sheet:#1A2026; --ink:#E7ECF0; --ink2:#9AA6B0; --rule:#3A4752; --line:#2A343D;
+    --accent:#5BC892; --accent-ink:#0F1A14; --accent-soft:#1E3A2C;
+    --bad:#E4826E; --bad-soft:#3B2521; --badge:#6C7A86; color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  [hidden]{display:none !important}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+  .wrap{max-width:760px;margin:0 auto;padding:20px 18px 64px}
+
+  /* 상단 */
+  .top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+  h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.01em;line-height:1.25}
+  .sub{margin:2px 0 0;color:var(--ink2);font-size:14px}
+  .stat{font-size:13.5px;color:var(--ink2);text-align:right;line-height:1.5}
+  .stat b{color:var(--ink);font-weight:700}
+
+  .tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1.5px solid var(--rule);overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{appearance:none;background:none;border:0;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;padding:8px 12px 9px;font:inherit;font-size:15px;font-weight:600;color:var(--ink2);cursor:pointer;white-space:nowrap}
+  .tabs button.on{color:var(--ink);border-bottom-color:var(--ink)}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px;font-size:14px;color:var(--ink2);align-items:center}
+  .toolbar label{display:flex;align-items:center;gap:6px}
+  select,input[type=search]{font:inherit;font-size:16px;color:var(--ink);background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:5px 8px;max-width:100%}
+  input[type=search]{flex:1 1 160px;min-width:0}
+
+  /* 진행 표시 */
+  .prog{display:flex;align-items:baseline;gap:8px;margin:14px 0 0;font-size:14px;color:var(--ink2);font-variant-numeric:tabular-nums;flex-wrap:wrap}
+  .prog b{color:var(--ink);font-weight:800;font-size:18px}
+  .prog small{color:var(--ink2);font-weight:400}
+
+  /* 랜덤·틀린 모드 큰 헤더 */
+  .big-head{margin:12px 0 0;font-size:15px;color:var(--ink2)}
+  .big-head span.exam{color:var(--ink);font-weight:600}
+  .big-head b{color:var(--ink);font-size:22px;font-weight:800;letter-spacing:-.01em;margin-left:4px}
+  .theme-head{margin:12px 0 0;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .theme-head .rank{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+  .theme-head b{font-size:19px;font-weight:800;letter-spacing:-.01em;line-height:1.3}
+  .theme-head small{color:var(--ink2);font-size:13px}
+
+  /* 문제 */
+  .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:14px 0 0;font-size:13px}
+  .chip{display:inline-block;padding:2px 9px;border:1px solid var(--rule);border-radius:999px;color:var(--ink2);background:var(--sheet)}
+  .chip.bad{color:var(--bad);border-color:var(--bad);background:var(--bad-soft);font-weight:600}
+  .chip.good{color:var(--accent);border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+  .chip.freq{color:var(--accent);border-color:var(--accent);font-weight:600}
+
+  .q-frame{position:relative;border:1.5px solid var(--ink);background:var(--sheet);margin-top:20px;padding:24px 22px 20px;min-width:0}
+  .q-no{position:absolute;left:14px;top:-15px;background:var(--badge);color:#fff;font-weight:800;font-size:17px;line-height:1;padding:7px 11px 6px;letter-spacing:.03em;border-radius:3px;font-variant-numeric:tabular-nums}
+  .q-text{white-space:pre-line;line-height:1.8;font-size:16px;word-break:keep-all}
+  .q-text table{display:block;overflow-x:auto;max-width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.45;margin:6px 0 8px;white-space:normal;word-break:normal}
+  .q-text th,.q-text td{border:1px solid var(--rule);padding:4px 8px;text-align:center;vertical-align:middle;min-width:48px;white-space:nowrap}
+  .q-text th{background:var(--paper);font-weight:600}
+  .q-text img{display:block;max-width:100%;height:auto;margin:10px 0;border:1px solid var(--line);border-radius:3px;background:#fff}
+
+  /* 답안지 */
+  .sheet{margin-top:22px}
+  .sheet-head{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--ink2);margin-bottom:6px;gap:8px}
+  .sheet-head b{color:var(--ink);font-weight:700}
+  .hint{font-size:12.5px}
+  textarea{display:block;width:100%;min-height:200px;resize:vertical;font:inherit;font-size:16px;color:var(--ink);background:var(--sheet) repeating-linear-gradient(to bottom,transparent 0,transparent 31px,var(--rule) 31px,var(--rule) 32px) local;background-origin:content-box;line-height:32px;border:1px solid var(--rule);border-radius:4px;padding:0 14px}
+  textarea:focus{outline:2px solid var(--focus);outline-offset:1px}
+  textarea::placeholder{color:var(--ink2);opacity:.8}
+
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  button.btn{appearance:none;font:inherit;font-size:15px;font-weight:600;padding:10px 14px;border-radius:7px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);cursor:pointer;flex:1 1 auto;min-width:92px}
+  button.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  button.btn.ghost{background:transparent}
+  button.btn.small{flex:0 0 auto;font-size:13.5px;padding:6px 10px;min-width:0}
+  button.btn[disabled]{opacity:.4;cursor:not-allowed}
+  button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+  /* 모범답안 */
+  #result{margin-top:28px}
+  .h{font-size:14px;font-weight:700;color:var(--ink2);margin:22px 0 8px}
+  .model{font-family:var(--serif);white-space:pre-line;line-height:1.9;font-size:15.5px;border-left:3px solid var(--accent);padding:4px 0 4px 16px;word-break:keep-all}
+  .note{font-size:13.5px;color:var(--ink2);margin:10px 0 0 19px}
+  .mine{white-space:pre-wrap;font-size:14.5px;line-height:1.7;color:var(--ink2);border-left:3px solid var(--rule);padding:4px 0 4px 16px;word-break:keep-all}
+  details.prev summary{cursor:pointer;font-size:14px;font-weight:700;color:var(--ink2);margin:22px 0 8px;list-style:none;display:flex;gap:6px;align-items:center}
+  details.prev summary::-webkit-details-marker{display:none}
+  details.prev summary::before{content:'▸';font-size:12px}
+  details.prev[open] summary::before{content:'▾'}
+  .kw-row{display:flex;gap:6px;flex-wrap:wrap}
+  .kw{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13.5px;border:1px solid var(--rule);color:var(--ink2);background:var(--sheet)}
+  .kw.hit{color:var(--accent);border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+  .kw-sum{font-size:13.5px;color:var(--ink2);margin-top:8px}
+  .rate{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .rate button{appearance:none;font:inherit;font-size:15.5px;font-weight:700;padding:14px 6px;border-radius:7px;border:1.5px solid var(--rule);background:var(--sheet);color:var(--ink);cursor:pointer}
+  .rate button[data-r="bad"].sel{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+  .rate button[data-r="good"].sel{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+
+  /* 회차 끝 */
+  .end-card{border:1.5px dashed var(--rule);border-radius:8px;background:var(--sheet);padding:28px 22px;text-align:center;margin-top:24px}
+  .end-card p{margin:0 0 14px;font-size:16px}
+  .end-card .actions{justify-content:center}
+
+  /* 목록 */
+  .list-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:18px 0 8px;flex-wrap:wrap}
+  .list-head p{margin:0;color:var(--ink2);font-size:14px}
+  .rows{border-top:1.5px solid var(--rule)}
+  .row{display:grid;grid-template-columns:92px 1fr auto;gap:10px;align-items:center;padding:11px 4px;border-bottom:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;font:inherit;color:var(--ink)}
+  .row:hover{background:var(--sheet)}
+  .row .no{font-weight:700;font-variant-numeric:tabular-nums}
+  .row .no small{display:block;font-weight:400;color:var(--ink2);font-size:12px}
+  .row .title{font-size:14.5px;line-height:1.45;color:var(--ink);word-break:keep-all;min-width:0}
+  .row .title small{display:block;color:var(--ink2);font-size:12.5px}
+  .row .st{font-size:12.5px;white-space:nowrap}
+  .empty{padding:36px 10px;text-align:center;color:var(--ink2);line-height:1.7}
+  .danger{color:var(--bad);border-color:var(--bad);flex:0 0 auto}
+
+  /* 빈출 주제 목록 */
+  .trow{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;font:inherit;color:var(--ink)}
+  .trow:hover{background:var(--sheet)}
+  .trow .rk{font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink2);font-size:14px}
+  .trow .nm{font-size:15px;font-weight:600;line-height:1.4;word-break:keep-all;min-width:0}
+  .trow .nm small{display:block;font-weight:400;color:var(--ink2);font-size:12.5px;margin-top:2px}
+  .trow .cnt{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .trow .cnt b{display:block;font-size:17px;font-weight:800;line-height:1.2}
+  .trow .cnt small{color:var(--ink2);font-size:12px}
+  .bar{height:4px;background:var(--line);border-radius:2px;margin-top:6px;overflow:hidden;display:flex}
+  .bar i{display:block;height:100%}
+  .bar i.g{background:var(--accent)}
+  .bar i.b{background:var(--bad)}
+  .freq-sum{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:14px 0 6px;font-size:14px;color:var(--ink2)}
+  .freq-sum b{color:var(--ink);font-weight:800;font-size:18px}
+
+  /* 기록 관리 */
+  .manage{margin-top:28px;border-top:1.5px solid var(--rule);padding-top:16px}
+  .manage h3{margin:0 0 6px;font-size:15px}
+  .manage p{margin:0 0 10px;font-size:13.5px;color:var(--ink2)}
+  .manage textarea{min-height:90px;line-height:1.5;background:var(--sheet);font-size:12.5px;font-family:ui-monospace,Menlo,Consolas,monospace;padding:8px 10px}
+  .confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--bad)}
+  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;z-index:20;pointer-events:none;opacity:0;transition:opacity .2s}
+  .toast.show{opacity:1}
+
+  /* 홈화면 추가 안내 */
+  .tip{margin:16px 0 0;border:1px solid var(--rule);border-radius:8px;background:var(--sheet);padding:12px 14px;font-size:13.5px;color:var(--ink2);display:flex;gap:10px;align-items:flex-start;line-height:1.55}
+  .tip b{color:var(--ink)}
+  .tip button{appearance:none;border:0;background:none;color:var(--ink2);font:inherit;font-size:18px;line-height:1;cursor:pointer;padding:0 2px;margin-left:auto}
+
+  @media (max-width:600px){
+    .wrap{padding:16px 14px 56px}
+    h1{font-size:20px}
+    .q-frame{padding:22px 16px 16px}
+    .q-text{font-size:15.5px}
+    .row{grid-template-columns:78px 1fr auto}
+    .stat{text-align:left}
+    .big-head b{font-size:20px}
+    textarea{min-height:128px}
+    /* 정답 보기 버튼을 화면 아래에 고정해 긴 문제·답안지에서도 바로 누를 수 있게 */
+    .actions.stick{position:sticky;bottom:0;margin:14px -14px 0;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:var(--paper);border-top:1px solid var(--line);z-index:5}
+  }
+  @media (max-width:380px){
+    button.btn{padding:10px 8px;font-size:14px;min-width:80px}
+    .tabs button{padding:8px 8px 9px;font-size:14px}
+  }
+  @media (hover:none) and (pointer:coarse){
+    .hint{display:none}
+  }
+  @media (prefers-reduced-motion: no-preference){
+    #result{animation:fade .18s ease-out}
+    @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>온실가스관리기사 실기</h1>
+      <p class="sub">기출문제 연습</p>
+    </div>
+    <div class="stat" id="stat"></div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-view="ordered" class="on">순서대로</button>
+    <button data-view="freq">빈출</button>
+    <button data-view="random">랜덤</button>
+    <button data-view="wrong">틀린 문제</button>
+    <button data-view="list">전체 목록</button>
+  </nav>
+
+  <div class="tip" id="tip" hidden>
+    <span>📱 <b>홈 화면에 추가</b>하면 앱처럼 쓸 수 있어요.<br>아이폰: Safari 공유 버튼 → 홈 화면에 추가 · 안드로이드: Chrome 메뉴(⋮) → 홈 화면에 추가</span>
+    <button id="tip-close" aria-label="닫기">×</button>
+  </div>
+
+  <section id="view-ordered">
+    <div class="toolbar">
+      <label>회차 <select id="o-exam"></select></label>
+    </div>
+    <div id="ordered-area"></div>
+  </section>
+
+  <section id="view-freq" hidden>
+    <div class="toolbar">
+      <label>기준 <select id="f-min">
+        <option value="4">4회 이상 출제</option>
+        <option value="5">5회 이상 출제</option>
+        <option value="3">3회 이상 출제</option>
+        <option value="2">2회 이상 출제</option>
+      </select></label>
+      <label>유형 <select id="f-type"></select></label>
+    </div>
+    <div id="freq-area"></div>
+  </section>
+
+  <section id="view-random" hidden>
+    <div class="toolbar">
+      <label>유형 <select id="r-type"></select></label>
+    </div>
+    <div id="random-area"></div>
+  </section>
+
+  <section id="view-wrong" hidden>
+    <div id="wrong-area"></div>
+  </section>
+
+  <section id="view-list" hidden></section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="questions.js"></script>
+<script src="themes.js"></script>
+<script>
+(function(){
+  const REC_KEY  = 'ghg-quiz-records-v1';   // 평가 기록
+  const UI_KEY   = 'ghg-quiz-ui-v2';         // 모드별 UI 상태
+  const PROG_KEY = 'ghg-quiz-progress-v1';   // 회차별 '순서대로' 진행 상태
+  const TIP_KEY  = 'ghg-quiz-tip-v1';
+  const RATING_LABEL = { bad:'틀림', good:'정답' };
+
+  const $ = s => document.querySelector(s);
+  function loadJSON(k, fb){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; }catch(e){ return fb; } }
+  function saveJSON(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  let toastTimer = null;
+  function toast(msg){
+    const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  // 기록 로드 + 등급 마이그레이션 (못함·부분 → 틀림, 완벽 → 정답)
+  let records = loadJSON(REC_KEY, {});
+  let migrated = false;
+  for(const id in records){
+    const r = records[id];
+    if(!r || !r.rating) continue;
+    if(r.rating !== 'bad' && r.rating !== 'good'){ r.rating = 'bad'; migrated = true; }
+  }
+  if(migrated) saveJSON(REC_KEY, records);
+
+  let ui = Object.assign({
+    view: 'ordered',
+    ordered: { exam:null },
+    random:  { type:'all', seed:null, cursor:0, history:[] },
+    wrong:   { idx:0 },
+    freq:    { min:4, type:'all', theme:null, idx:0 },
+    list:    { q:'', exam:'all', st:'all' }
+  }, loadJSON(UI_KEY, {}));
+  ui.ordered = ui.ordered || { exam:null };
+  ui.random  = Object.assign({ type:'all', seed:null, cursor:0, history:[] }, ui.random || {});
+  ui.wrong   = ui.wrong || { idx:0 };
+  ui.freq    = Object.assign({ min:4, type:'all', theme:null, idx:0 }, ui.freq || {});
+  ui.list    = Object.assign({ q:'', exam:'all', st:'all' }, ui.list || {});
+
+  let progress = loadJSON(PROG_KEY, {});
+
+  // 회차별 그룹핑 (출제 순서 보존)
+  const EXAMS = [];
+  const BY_EXAM = {};
+  QUESTIONS.forEach(q => {
+    if(!BY_EXAM[q.exam]){ BY_EXAM[q.exam] = []; EXAMS.push(q.exam); }
+    BY_EXAM[q.exam].push(q);
+  });
+  for(const e of EXAMS) BY_EXAM[e].sort((a,b) => a.no - b.no);
+  const Q_BY_ID = {};
+  QUESTIONS.forEach(q => { Q_BY_ID[q.id] = q; });
+
+  // 주제별 그룹핑 (themes.js 에 없으면 topic 사용)
+  const THEME_OF = id => (typeof THEMES !== 'undefined' && THEMES[id]) || (Q_BY_ID[id] && Q_BY_ID[id].topic) || '';
+  const THEME_LIST = (() => {
+    const map = {};
+    QUESTIONS.forEach(q => {
+      const t = THEME_OF(q.id);
+      if(!map[t]) map[t] = { name:t, qs:[], exams:new Set(), types:new Set() };
+      map[t].qs.push(q); map[t].exams.add(q.exam); map[t].types.add(q.type);
+    });
+    const arr = Object.values(map).map(t => {
+      t.qs.sort((a,b) => { const ea = EXAMS.indexOf(a.exam), eb = EXAMS.indexOf(b.exam); return ea !== eb ? ea - eb : a.no - b.no; });
+      t.count = t.exams.size;
+      t.lastExam = t.qs[t.qs.length-1].exam;
+      return t;
+    });
+    arr.sort((a,b) => b.count - a.count || b.qs.length - a.qs.length || EXAMS.indexOf(b.lastExam) - EXAMS.indexOf(a.lastExam));
+    arr.forEach((t,i) => { t.rank = i+1; });
+    return arr;
+  })();
+  const THEME_BY_NAME = {};
+  THEME_LIST.forEach(t => { THEME_BY_NAME[t.name] = t; });
+
+  let revealed = false;
+
+  const pad = n => String(n).padStart(2,'0');
+  const norm = s => String(s||'').replace(/[\s,，]/g,'').toLowerCase();
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ---------- 상단 통계 ----------
+  function renderStat(){
+    const total = QUESTIONS.length;
+    const done = QUESTIONS.filter(q => records[q.id]).length;
+    const c = { bad:0, good:0 };
+    QUESTIONS.forEach(q => { const r = records[q.id]; if(r && c[r.rating] != null) c[r.rating]++; });
+    $('#stat').innerHTML =
+      `<b>${done}</b> / ${total}문제 평가함<br>` +
+      `<span style="color:var(--accent);font-weight:600">정답 ${c.good}</span> &nbsp; <span style="color:var(--bad);font-weight:600">틀림 ${c.bad}</span>`;
+  }
+
+  // ---------- 공통 문제 카드 ----------
+  function questionCardHTML(ctx){
+    const q = ctx.question;
+    const r = records[q.id];
+    const th = THEME_BY_NAME[THEME_OF(q.id)];
+    const statusChip = r
+      ? `<span class="chip ${r.rating==='bad'?'bad':'good'}" id="last-chip">지난 평가 ${RATING_LABEL[r.rating]}</span>`
+      : `<span class="chip" id="last-chip">아직 평가 안 함</span>`;
+    const freqChip = (th && th.count >= 2 && !ctx.hideFreq) ? `<span class="chip freq">★ ${th.count}회 출제</span>` : '';
+    const prevAns = r && r.answer ? `
+        <details class="prev"><summary>지난번 내 답안 (${RATING_LABEL[r.rating]})</summary><div class="mine">${esc(r.answer)}</div></details>` : '';
+    return `
+      ${ctx.headerHTML || ''}
+      ${ctx.progressHTML || ''}
+      <div class="meta"><span class="chip">${q.exam}</span><span class="chip">${q.type}</span><span class="chip">${q.topic}</span>${freqChip}${statusChip}</div>
+      <div class="q-frame"><div class="q-no">${pad(q.no)}</div><div class="q-text">${q.question}</div></div>
+      <div class="sheet">
+        <div class="sheet-head"><b>내 답안</b><span class="hint">Ctrl+Enter 로 정답 보기 · ← → 이동</span></div>
+        <textarea id="ans" placeholder="답안지에 쓰듯 적어보세요. 비워 두고 바로 정답을 봐도 괜찮아요."></textarea>
+      </div>
+      <div class="actions stick" id="act1">
+        <button class="btn ghost" id="btn-prev" ${ctx.prevEnabled ? '' : 'disabled'}>이전</button>
+        <button class="btn primary" id="btn-reveal">정답 보기</button>
+        <button class="btn ghost" id="btn-next" ${ctx.nextEnabled ? '' : 'disabled'}>다음</button>
+      </div>
+      <div id="result" hidden>
+        <div class="h">모범답안</div>
+        <div class="model">${q.answer}</div>
+        ${q.note ? `<p class="note">※ ${q.note}</p>` : ''}
+        <div class="h">핵심 키워드</div>
+        <div class="kw-row" id="kw"></div>
+        <div class="kw-sum" id="kw-sum"></div>
+        ${prevAns}
+        <div class="h">스스로 평가</div>
+        <div class="rate" id="rate">
+          <button data-r="bad">틀림</button>
+          <button data-r="good">정답</button>
+        </div>
+        <div class="actions">
+          <button class="btn ghost" id="btn-prev2" ${ctx.prevEnabled ? '' : 'disabled'}>이전 문제</button>
+          <button class="btn primary" id="btn-next2" ${ctx.nextEnabled ? '' : 'disabled'}>다음 문제</button>
+        </div>
+      </div>`;
+  }
+
+  let KEY_CTX = null;  // 키보드 단축키용 현재 컨텍스트
+
+  function bindCard(ctx){
+    const q = ctx.question;
+    revealed = false;
+    function updateSel(){
+      const r = records[q.id];
+      document.querySelectorAll('#rate button').forEach(b => b.classList.toggle('sel', r && b.dataset.r === r.rating));
+    }
+    function updateChip(){
+      const r = records[q.id];
+      const chip = document.getElementById('last-chip');
+      if(!chip) return;
+      chip.className = 'chip ' + (r ? (r.rating==='bad'?'bad':'good') : '');
+      chip.textContent = r ? `지난 평가 ${RATING_LABEL[r.rating]}` : '아직 평가 안 함';
+    }
+    function reveal(){
+      if(revealed) return;
+      revealed = true;
+      const ta = $('#ans');
+      ta.blur();
+      const ans = norm(ta.value);
+      const kws = q.keywords || [];
+      let hit = 0;
+      $('#kw').innerHTML = kws.map(k => {
+        const ok = ans && ans.includes(norm(k));
+        if(ok) hit++;
+        return `<span class="kw ${ok?'hit':''}">${ok?'✓ ':''}${k}</span>`;
+      }).join('');
+      $('#kw-sum').textContent = kws.length
+        ? (ans ? `내 답안에 ${kws.length}개 중 ${hit}개 포함` : `답안을 적지 않아 키워드 비교를 건너뛰었어요`)
+        : '';
+      $('#act1').hidden = true;
+      $('#result').hidden = false;
+      updateSel();
+      $('#result').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+    function rate(r){
+      const prev = records[q.id] || { count:0 };
+      const txt = ($('#ans').value||'').slice(0,3000);
+      records[q.id] = { rating:r, count:(prev.count||0)+1, last:Date.now(), answer: txt || prev.answer || '' };
+      saveJSON(REC_KEY, records);
+      updateSel();
+      updateChip();
+      renderStat();
+      if(ctx.onRate) ctx.onRate(r);
+    }
+    $('#btn-reveal').addEventListener('click', reveal);
+    $('#btn-prev').addEventListener('click', () => ctx.onPrev && ctx.onPrev());
+    $('#btn-next').addEventListener('click', () => ctx.onNext && ctx.onNext());
+    const p2 = document.getElementById('btn-prev2'); if(p2) p2.addEventListener('click', () => ctx.onPrev && ctx.onPrev());
+    const n2 = document.getElementById('btn-next2'); if(n2) n2.addEventListener('click', () => ctx.onNext && ctx.onNext());
+    $('#rate').addEventListener('click', e => {
+      const b = e.target.closest('button[data-r]'); if(!b) return;
+      rate(b.dataset.r);
+    });
+    $('#ans').addEventListener('keydown', e => {
+      if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+        e.preventDefault();
+        revealed ? (ctx.onNext && ctx.onNext()) : reveal();
+      }
+    });
+    KEY_CTX = {
+      reveal,
+      next: () => ctx.onNext && ctx.onNext(),
+      prev: () => ctx.onPrev && ctx.onPrev(),
+      prevEnabled: !!ctx.prevEnabled,
+      nextEnabled: !!ctx.nextEnabled
+    };
+    window.scrollTo({ top:0 });
+  }
+
+  // ---------- 순서대로 ----------
+  function buildOrderedExamSelect(){
+    const sel = $('#o-exam');
+    sel.innerHTML = EXAMS.map(e => {
+      const done = progress[e] || 0;
+      const total = BY_EXAM[e].length;
+      const mark = done >= total ? ' ✓' : (done > 0 ? ` (${Math.min(done,total)}/${total})` : '');
+      return `<option value="${e}">${e}${mark}</option>`;
+    }).join('');
+    sel.value = ui.ordered.exam && BY_EXAM[ui.ordered.exam] ? ui.ordered.exam : EXAMS[0];
+    sel.onchange = () => {
+      ui.ordered.exam = sel.value;
+      saveJSON(UI_KEY, ui);
+      renderOrdered();
+    };
+  }
+
+  function renderOrdered(){
+    if(!EXAMS.length){ $('#ordered-area').innerHTML = '<div class="empty">문제가 없어요.</div>'; return; }
+    if(!ui.ordered.exam || !BY_EXAM[ui.ordered.exam]) ui.ordered.exam = EXAMS[0];
+    buildOrderedExamSelect();
+    const exam = ui.ordered.exam;
+    const list = BY_EXAM[exam];
+    let idx = progress[exam] || 0;
+    if(idx < 0) idx = 0;
+    const area = $('#ordered-area');
+
+    if(idx >= list.length){
+      const i = EXAMS.indexOf(exam);
+      const nextExam = (i >= 0 && i < EXAMS.length - 1) ? EXAMS[i+1] : null;
+      area.innerHTML = `
+        <div class="end-card">
+          <p>🎉 <b>${exam}</b> 끝까지 풀었어요.</p>
+          <div class="actions">
+            <button class="btn ghost" id="o-restart">처음부터 다시</button>
+            <button class="btn ghost" id="o-back">마지막 문제로</button>
+            ${nextExam ? `<button class="btn primary" id="o-next-exam">${nextExam} 시작</button>` : '<span style="color:var(--ink2);font-size:14px">마지막 회차예요.</span>'}
+          </div>
+        </div>`;
+      $('#o-restart').addEventListener('click', () => {
+        progress[exam] = 0; saveJSON(PROG_KEY, progress);
+        renderOrdered();
+      });
+      $('#o-back').addEventListener('click', () => {
+        progress[exam] = list.length - 1; saveJSON(PROG_KEY, progress);
+        renderOrdered();
+      });
+      const nx = document.getElementById('o-next-exam');
+      if(nx) nx.addEventListener('click', () => {
+        ui.ordered.exam = nextExam; saveJSON(UI_KEY, ui);
+        if(!(progress[nextExam] >= 0)) progress[nextExam] = 0;
+        saveJSON(PROG_KEY, progress);
+        renderOrdered();
+      });
+      KEY_CTX = null;
+      return;
+    }
+
+    const q = list[idx];
+    const nav = {
+      question: q,
+      headerHTML: '',
+      progressHTML: `<div class="prog"><span>${exam}</span> · <b>${idx+1}</b> / ${list.length}</div>`,
+      prevEnabled: idx > 0,
+      nextEnabled: true,
+      onPrev: () => {
+        progress[exam] = Math.max(0, idx - 1); saveJSON(PROG_KEY, progress);
+        renderOrdered();
+      },
+      onNext: () => {
+        progress[exam] = idx + 1; saveJSON(PROG_KEY, progress);
+        renderOrdered();
+      }
+    };
+    area.innerHTML = questionCardHTML(nav);
+    bindCard(nav);
+  }
+
+  // ---------- 빈출 ----------
+  function buildFreqSelects(){
+    const m = $('#f-min');
+    m.value = String(ui.freq.min);
+    if(m.value !== String(ui.freq.min)){ ui.freq.min = 4; m.value = "4"; }
+    m.onchange = () => { ui.freq.min = Number(m.value); ui.freq.theme = null; ui.freq.idx = 0; saveJSON(UI_KEY, ui); renderFreq(); };
+    const t = $('#f-type');
+    const types = [...new Set(QUESTIONS.map(q => q.type))];
+    t.innerHTML = `<option value="all">전체 유형</option>` + types.map(x => `<option value="${x}">${x}</option>`).join('');
+    t.value = ui.freq.type || 'all';
+    if(t.value !== (ui.freq.type||'all')){ ui.freq.type = 'all'; t.value = 'all'; }
+    t.onchange = () => { ui.freq.type = t.value; ui.freq.theme = null; ui.freq.idx = 0; saveJSON(UI_KEY, ui); renderFreq(); };
+  }
+  function freqThemes(){
+    return THEME_LIST
+      .filter(t => t.count >= ui.freq.min)
+      .map(t => ({ t, qs: t.qs.filter(q => ui.freq.type === 'all' || q.type === ui.freq.type) }))
+      .filter(x => x.qs.length);
+  }
+  function themeStatus(qs){
+    let good = 0, bad = 0;
+    qs.forEach(q => { const r = records[q.id]; if(r){ if(r.rating === 'good') good++; else bad++; } });
+    return { good, bad, none: qs.length - good - bad };
+  }
+  function renderFreq(){
+    buildFreqSelects();
+    const area = $('#freq-area');
+    const groups = freqThemes();
+    if(!groups.length){
+      area.innerHTML = '<div class="empty">조건에 맞는 주제가 없어요.<br>기준을 "2회 이상"으로 낮추거나 유형을 바꿔 보세요.</div>';
+      KEY_CTX = null; return;
+    }
+
+    // 문제 풀기 모드 (ui.freq.theme = 주제명 또는 '*' 전체)
+    if(ui.freq.theme){
+      const seq = []; // {q, t, i, n}
+      groups.forEach(g => {
+        if(ui.freq.theme !== '*' && g.t.name !== ui.freq.theme) return;
+        g.qs.forEach((q,i) => seq.push({ q, t:g.t, i, n:g.qs.length }));
+      });
+      if(!seq.length){ ui.freq.theme = null; ui.freq.idx = 0; saveJSON(UI_KEY, ui); return renderFreq(); }
+      if(ui.freq.idx >= seq.length){
+        const one = ui.freq.theme !== '*';
+        area.innerHTML = `
+          <div class="end-card">
+            <p>🎉 ${one ? `<b>${esc(ui.freq.theme)}</b> 주제를` : `빈출 ${groups.length}개 주제 ${seq.length}문제를`} 모두 풀었어요.</p>
+            <div class="actions">
+              <button class="btn ghost" id="f-restart">처음부터 다시</button>
+              <button class="btn primary" id="f-list">주제 목록으로</button>
+            </div>
+          </div>`;
+        $('#f-restart').addEventListener('click', () => { ui.freq.idx = 0; saveJSON(UI_KEY, ui); renderFreq(); });
+        $('#f-list').addEventListener('click', () => { ui.freq.theme = null; ui.freq.idx = 0; saveJSON(UI_KEY, ui); renderFreq(); });
+        KEY_CTX = null; return;
+      }
+      if(ui.freq.idx < 0) ui.freq.idx = 0;
+      const cur = seq[ui.freq.idx];
+      const nav = {
+        question: cur.q,
+        hideFreq: true,
+        headerHTML: `
+          <div class="actions" style="margin-top:12px"><button class="btn ghost small" id="f-back">‹ 주제 목록</button></div>
+          <div class="theme-head"><span class="rank">빈출 ${cur.t.rank}위 · ${cur.t.count}회 출제</span><b>${esc(cur.t.name)}</b><small>이 주제 ${cur.i+1} / ${cur.n}</small></div>`,
+        progressHTML: `<div class="prog"><b>${ui.freq.idx+1}</b> / ${seq.length} <small>· ${ui.freq.theme === '*' ? '빈출 전체' : '이 주제'}</small></div>`,
+        prevEnabled: ui.freq.idx > 0,
+        nextEnabled: true,
+        onPrev: () => { ui.freq.idx = Math.max(0, ui.freq.idx - 1); saveJSON(UI_KEY, ui); renderFreq(); },
+        onNext: () => { ui.freq.idx += 1; saveJSON(UI_KEY, ui); renderFreq(); }
+      };
+      area.innerHTML = questionCardHTML(nav);
+      bindCard(nav);
+      $('#f-back').addEventListener('click', () => { ui.freq.theme = null; saveJSON(UI_KEY, ui); renderFreq(); });
+      return;
+    }
+
+    // 주제 목록 모드
+    const totalQ = groups.reduce((s,g) => s + g.qs.length, 0);
+    const rows = groups.map(g => {
+      const st = themeStatus(g.qs);
+      const n = g.qs.length;
+      return `<button class="trow" data-theme="${esc(g.t.name)}">
+        <span class="rk">${g.t.rank}</span>
+        <span class="nm">${esc(g.t.name)}<small>${n}문제 · 최근 ${g.t.lastExam}${st.good+st.bad ? ` · 정답 ${st.good} 틀림 ${st.bad}` : ''}</small>
+          <span class="bar"><i class="g" style="width:${st.good/n*100}%"></i><i class="b" style="width:${st.bad/n*100}%"></i></span></span>
+        <span class="cnt"><b>${g.t.count}회</b><small>/ ${EXAMS.length}회</small></span>
+      </button>`;
+    }).join('');
+    area.innerHTML = `
+      <div class="freq-sum"><span><b>${groups.length}</b>개 주제</span><span><b>${totalQ}</b>문제</span><span style="margin-left:auto"><button class="btn primary small" id="f-all">빈출 전체 순서대로 풀기</button></span></div>
+      <p style="margin:0 0 6px;font-size:13px;color:var(--ink2)">같은 내용이 반복 출제된 주제를 횟수 순으로 정렬했어요. 주제를 누르면 그 주제의 문제만 이어서 풀어요.</p>
+      <div class="rows">${rows}</div>`;
+    area.querySelectorAll('.trow').forEach(b => b.addEventListener('click', () => {
+      ui.freq.theme = b.dataset.theme; ui.freq.idx = 0; saveJSON(UI_KEY, ui); renderFreq();
+    }));
+    $('#f-all').addEventListener('click', () => { ui.freq.theme = '*'; ui.freq.idx = 0; saveJSON(UI_KEY, ui); renderFreq(); });
+    KEY_CTX = null;
+    window.scrollTo({ top:0 });
+  }
+
+  // ---------- 랜덤 ----------
+  function buildRandomTypeSelect(){
+    const sel = $('#r-type');
+    const types = [...new Set(QUESTIONS.map(q => q.type))];
+    sel.innerHTML = `<option value="all">전체 유형</option>` + types.map(t => `<option value="${t}">${t}</option>`).join('');
+    sel.value = ui.random.type || 'all';
+    sel.onchange = () => {
+      ui.random.type = sel.value;
+      reseedRandom();
+      saveJSON(UI_KEY, ui);
+      renderRandom();
+    };
+  }
+  function filteredRandomIds(){
+    const type = ui.random.type;
+    return QUESTIONS.filter(q => type === 'all' || q.type === type).map(q => q.id);
+  }
+  function reseedRandom(){
+    const ids = filteredRandomIds();
+    let seed = shuffle(ids);
+    if(ui.random.seed && ui.random.seed.length && seed.length > 1){
+      const lastId = ui.random.seed[ui.random.seed.length - 1];
+      if(seed[0] === lastId) [seed[0], seed[1]] = [seed[1], seed[0]];
+    }
+    ui.random.seed = seed;
+    ui.random.cursor = 0;
+    ui.random.history = [];
+  }
+  function renderRandom(){
+    buildRandomTypeSelect();
+    const area = $('#random-area');
+    const expected = filteredRandomIds();
+    const sameSet = ui.random.seed && ui.random.seed.length === expected.length &&
+      ui.random.seed.every(id => expected.includes(id));
+    if(!sameSet) reseedRandom();
+    if(!ui.random.seed.length){
+      area.innerHTML = '<div class="empty">조건에 맞는 문제가 없어요.</div>';
+      KEY_CTX = null;
+      return;
+    }
+    if(ui.random.cursor >= ui.random.seed.length){
+      reseedRandom();
+    }
+    const qid = ui.random.seed[ui.random.cursor];
+    const q = Q_BY_ID[qid];
+    if(!q){ reseedRandom(); return renderRandom(); }
+    const nav = {
+      question: q,
+      headerHTML: `<div class="big-head"><span class="exam">${q.exam}</span> · <b>${q.no}번</b></div>`,
+      progressHTML: `<div class="prog"><b>${ui.random.cursor+1}</b> / ${ui.random.seed.length} <small>· 한 바퀴 ${ui.random.seed.length}문제</small></div>`,
+      prevEnabled: ui.random.history.length > 0,
+      nextEnabled: true,
+      onPrev: () => {
+        if(!ui.random.history.length) return;
+        ui.random.cursor = ui.random.history.pop();
+        saveJSON(UI_KEY, ui);
+        renderRandom();
+      },
+      onNext: () => {
+        ui.random.history.push(ui.random.cursor);
+        ui.random.cursor += 1;
+        saveJSON(UI_KEY, ui);
+        renderRandom();
+      }
+    };
+    area.innerHTML = questionCardHTML(nav);
+    bindCard(nav);
+  }
+
+  // ---------- 틀린 문제 ----------
+  function wrongList(){
+    return QUESTIONS
+      .filter(q => records[q.id] && records[q.id].rating === 'bad')
+      .sort((a,b) => {
+        const ea = EXAMS.indexOf(a.exam), eb = EXAMS.indexOf(b.exam);
+        if(ea !== eb) return ea - eb;
+        return a.no - b.no;
+      });
+  }
+  function renderWrong(){
+    const list = wrongList();
+    const area = $('#wrong-area');
+    if(!list.length){
+      area.innerHTML = `<div class="empty">아직 '틀림'으로 평가한 문제가 없어요.<br>문제를 풀고 '틀림' 버튼을 누르면 여기에 모여요.</div>`;
+      KEY_CTX = null;
+      return;
+    }
+    if(ui.wrong.idx >= list.length) ui.wrong.idx = Math.max(0, list.length - 1);
+    if(ui.wrong.idx < 0) ui.wrong.idx = 0;
+    const q = list[ui.wrong.idx];
+    const nav = {
+      question: q,
+      headerHTML: `<div class="big-head"><span class="exam">${q.exam}</span> · <b>${q.no}번</b></div>`,
+      progressHTML: `<div class="prog"><b>${ui.wrong.idx+1}</b> / ${list.length} <small>· 틀린 문제</small></div>`,
+      prevEnabled: ui.wrong.idx > 0,
+      nextEnabled: ui.wrong.idx < list.length - 1,
+      onPrev: () => {
+        const cur = wrongList();
+        const i = cur.findIndex(x => x.id === q.id);
+        if(i > 0){ ui.wrong.idx = i - 1; }
+        else if(i === -1 && ui.wrong.idx > 0){ ui.wrong.idx -= 1; }
+        saveJSON(UI_KEY, ui);
+        renderWrong();
+      },
+      onNext: () => {
+        const cur = wrongList();
+        const i = cur.findIndex(x => x.id === q.id);
+        if(i === -1){
+          renderWrong();
+        } else {
+          ui.wrong.idx = Math.min(cur.length - 1, i + 1);
+          saveJSON(UI_KEY, ui);
+          renderWrong();
+        }
+      }
+    };
+    area.innerHTML = questionCardHTML(nav);
+    bindCard(nav);
+  }
+
+  // ---------- 전체 목록 ----------
+  function renderListView(){
+    const target = $('#view-list');
+    const f = ui.list;
+    const kw = norm(f.q);
+    const filtered = QUESTIONS.filter(q => {
+      if(f.exam !== 'all' && q.exam !== f.exam) return false;
+      const r = records[q.id];
+      if(f.st === 'none' && r) return false;
+      if(f.st === 'bad' && !(r && r.rating === 'bad')) return false;
+      if(f.st === 'good' && !(r && r.rating === 'good')) return false;
+      if(kw){
+        const hay = norm(q.topic + ' ' + THEME_OF(q.id) + ' ' + q.question.replace(/<[^>]+>/g,' ') + ' ' + (q.keywords||[]).join(' '));
+        if(!hay.includes(kw)) return false;
+      }
+      return true;
+    });
+    const head = `
+      <div class="toolbar">
+        <input type="search" id="l-q" placeholder="주제·문제 내용 검색" value="${esc(f.q)}">
+        <label>회차 <select id="l-exam"><option value="all">전체</option>${EXAMS.map(e => `<option value="${e}" ${f.exam===e?'selected':''}>${e}</option>`).join('')}</select></label>
+        <label>상태 <select id="l-st">
+          <option value="all" ${f.st==='all'?'selected':''}>전체</option>
+          <option value="none" ${f.st==='none'?'selected':''}>안 풀음</option>
+          <option value="bad" ${f.st==='bad'?'selected':''}>틀림</option>
+          <option value="good" ${f.st==='good'?'selected':''}>정답</option>
+        </select></label>
+      </div>
+      <div class="list-head"><p>${filtered.length === QUESTIONS.length ? `전체 ${QUESTIONS.length}문제` : `${filtered.length}문제 (전체 ${QUESTIONS.length})`}. 누르면 순서대로 모드에서 그 문제로 이동해요.</p></div>`;
+    const rows = filtered.map(q => {
+      const r = records[q.id];
+      const th = THEME_BY_NAME[THEME_OF(q.id)];
+      const st = r
+        ? `<span class="chip ${r.rating==='bad'?'bad':'good'}">${RATING_LABEL[r.rating]}</span>`
+        : `<span class="chip">안 풀음</span>`;
+      const title = q.question.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,70);
+      return `<button class="row" data-id="${q.id}">
+        <span class="no">${pad(q.no)}<small>${q.exam}</small></span>
+        <span class="title">${esc(title)}<small>${q.type} · ${q.topic}${th && th.count >= 2 ? ` · ★${th.count}회` : ''}</small></span>
+        <span class="st">${st}</span></button>`;
+    }).join('');
+    const manage = `
+      <div class="manage">
+        <h3>기록 관리</h3>
+        <p>기록은 이 기기의 브라우저에만 저장돼요. 다른 기기로 옮기려면 아래 글을 복사해서 그 기기의 '가져오기' 칸에 붙여 넣으세요.</p>
+        <div class="actions" style="margin-top:0">
+          <button class="btn small" id="btn-export">기록 내보내기(복사)</button>
+          <button class="btn small" id="btn-import-toggle">기록 가져오기</button>
+          <button class="btn ghost small danger" id="btn-reset">기록 모두 지우기</button>
+        </div>
+        <div id="export-box" hidden style="margin-top:10px"><textarea id="export-ta" readonly></textarea><p style="margin-top:6px">위 내용이 복사됐어요. 복사가 안 됐으면 칸을 길게 눌러 전체 선택 후 복사하세요.</p></div>
+        <div id="import-box" hidden style="margin-top:10px"><textarea id="import-ta" placeholder="다른 기기에서 내보낸 내용을 여기에 붙여 넣으세요"></textarea>
+          <div class="actions" style="margin-top:8px"><button class="btn primary small" id="btn-import">가져와서 합치기</button></div></div>
+        <div id="reset-box" class="confirm" hidden style="margin-top:10px"><span>평가·답안 기록을 모두 지울까요? 되돌릴 수 없어요.</span><button class="btn small danger" id="btn-reset-yes">지우기</button><button class="btn ghost small" id="btn-reset-no">취소</button></div>
+      </div>`;
+    target.innerHTML = head + (rows ? `<div class="rows">${rows}</div>` : '<div class="empty">조건에 맞는 문제가 없어요.</div>') + manage;
+
+    const qIn = $('#l-q');
+    let tm = null;
+    qIn.addEventListener('input', () => { clearTimeout(tm); tm = setTimeout(() => { ui.list.q = qIn.value; saveJSON(UI_KEY, ui); const pos = qIn.selectionStart; renderListView(); const n = $('#l-q'); n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} }, 250); });
+    $('#l-exam').addEventListener('change', e => { ui.list.exam = e.target.value; saveJSON(UI_KEY, ui); renderListView(); });
+    $('#l-st').addEventListener('change', e => { ui.list.st = e.target.value; saveJSON(UI_KEY, ui); renderListView(); });
+
+    target.querySelectorAll('.row').forEach(b => b.addEventListener('click', () => {
+      const q = Q_BY_ID[b.dataset.id]; if(!q) return;
+      ui.ordered.exam = q.exam;
+      const idx = BY_EXAM[q.exam].findIndex(x => x.id === q.id);
+      progress[q.exam] = idx >= 0 ? idx : 0;
+      saveJSON(UI_KEY, ui); saveJSON(PROG_KEY, progress);
+      showView('ordered');
+    }));
+
+    $('#btn-export').addEventListener('click', async () => {
+      const data = JSON.stringify({ app:'ghg-quiz', v:1, records, progress });
+      const box = $('#export-box'), ta = $('#export-ta');
+      ta.value = data; box.hidden = false; $('#import-box').hidden = true;
+      try{ await navigator.clipboard.writeText(data); toast('기록을 복사했어요'); }
+      catch(e){ ta.focus(); ta.select(); toast('칸의 내용을 직접 복사하세요'); }
+    });
+    $('#btn-import-toggle').addEventListener('click', () => { $('#import-box').hidden = !$('#import-box').hidden; $('#export-box').hidden = true; });
+    $('#btn-import').addEventListener('click', () => {
+      let data = null;
+      try{ data = JSON.parse($('#import-ta').value.trim()); }catch(e){}
+      if(!data || data.app !== 'ghg-quiz' || !data.records){ toast('가져올 수 있는 내용이 아니에요'); return; }
+      let n = 0;
+      for(const id in data.records){
+        const inc = data.records[id]; if(!inc || !inc.rating) continue;
+        const cur = records[id];
+        if(!cur || (inc.last||0) > (cur.last||0)){ records[id] = inc; n++; }
+      }
+      if(data.progress){ for(const e in data.progress){ if(!(progress[e] >= 0) || data.progress[e] > progress[e]) progress[e] = data.progress[e]; } }
+      saveJSON(REC_KEY, records); saveJSON(PROG_KEY, progress);
+      renderStat(); renderListView();
+      toast(`${n}문제 기록을 가져왔어요`);
+    });
+    $('#btn-reset').addEventListener('click', () => { $('#reset-box').hidden = false; });
+    $('#btn-reset-no').addEventListener('click', () => { $('#reset-box').hidden = true; });
+    $('#btn-reset-yes').addEventListener('click', () => {
+      records = {}; saveJSON(REC_KEY, records); renderStat(); renderListView(); toast('기록을 모두 지웠어요');
+    });
+    KEY_CTX = null;
+  }
+
+  // ---------- 화면 전환 ----------
+  function showView(v){
+    if(!['ordered','freq','random','wrong','list'].includes(v)) v = 'ordered';
+    ui.view = v; saveJSON(UI_KEY, ui);
+    document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.view === v));
+    $('#view-ordered').hidden = v !== 'ordered';
+    $('#view-freq').hidden    = v !== 'freq';
+    $('#view-random').hidden  = v !== 'random';
+    $('#view-wrong').hidden   = v !== 'wrong';
+    $('#view-list').hidden    = v !== 'list';
+    // 다른 모드의 문제 카드는 비운다 (같은 id의 답안칸이 둘 생기면 숨은 쪽을 읽는 문제가 있었음)
+    ['#ordered-area','#freq-area','#random-area','#wrong-area','#view-list'].forEach(s => { const el = $(s); if(el && el.closest('section').hidden) el.innerHTML = ''; });
+    if(v === 'ordered') renderOrdered();
+    if(v === 'freq')    renderFreq();
+    if(v === 'random')  renderRandom();
+    if(v === 'wrong')   renderWrong();
+    if(v === 'list')    renderListView();
+  }
+  $('#tabs').addEventListener('click', e => {
+    const b = e.target.closest('button[data-view]'); if(b) showView(b.dataset.view);
+  });
+
+  // ---------- 전역 키보드 단축키 ----------
+  document.addEventListener('keydown', e => {
+    if(!KEY_CTX) return;
+    const tag = e.target && e.target.tagName;
+    const inField = tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'SELECT';
+    if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+      if(!inField){ e.preventDefault(); revealed ? KEY_CTX.next() : KEY_CTX.reveal(); }
+      return;
+    }
+    if(inField) return;
+    if(e.key === 'ArrowLeft' && KEY_CTX.prevEnabled){ e.preventDefault(); KEY_CTX.prev(); }
+    if(e.key === 'ArrowRight' && KEY_CTX.nextEnabled){ e.preventDefault(); KEY_CTX.next(); }
+  });
+
+  // ---------- 홈 화면 추가 안내 (모바일 브라우저에서 한 번만) ----------
+  (function(){
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    const mobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+    let seen = false; try{ seen = !!localStorage.getItem(TIP_KEY); }catch(e){}
+    if(mobile && !standalone && !seen){
+      $('#tip').hidden = false;
+      $('#tip-close').addEventListener('click', () => { $('#tip').hidden = true; try{ localStorage.setItem(TIP_KEY,'1'); }catch(e){} });
+    }
+  })();
+
+  // ---------- 시작 ----------
+  if(typeof QUESTIONS === 'undefined' || !Array.isArray(QUESTIONS)){
+    document.querySelector('.wrap').insertAdjacentHTML('beforeend',
+      `<div class="empty">questions.js 를 찾지 못했어요.<br>index.html 과 같은 폴더에 questions.js 가 있는지 확인해 주세요.</div>`);
+  } else {
+    renderStat();
+    showView(ui.view);
+  }
+})();
+</script>
+</body>
+</html>
